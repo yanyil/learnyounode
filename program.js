@@ -1,13 +1,9 @@
-var filterModule = require('./filterModule');
-var dir = process.argv[2];
-var ext = process.argv[3];
+var http = require('http');
+var url = process.argv[2];
 
-filterModule(dir, ext, function(err, data) {
-  if(err) {
-    return console.error(err);
-  }
-
-  data.forEach(function(file) {
-    console.log(file);
-  });
+http.get(url, function(response) {
+  response.setEncoding("utf8");
+  response.on("data", function(data) {
+    console.log(data);
+  })
 });
