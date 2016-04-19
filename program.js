@@ -1,12 +1,13 @@
-var fs = require('fs');
-var path = require('path');
+var filterModule = require('./filterModule');
 var dir = process.argv[2];
-var filter = process.argv[3];
+var ext = process.argv[3];
 
-fs.readdir(dir, function(err, list) {
-  for(var i = 0; i < list.length; i++) {
-    if(path.extname(list[i]) === '.' + filter) {
-      console.log(list[i]);
-    }
+filterModule(dir, ext, function(err, data) {
+  if(err) {
+    return console.error(err);
   }
+
+  data.forEach(function(file) {
+    console.log(file);
+  });
 });
