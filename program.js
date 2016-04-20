@@ -1,15 +1,28 @@
 var http = require('http');
-var url = process.argv[2];
-var received = [];
+var bl = require('bl');
+var url = process.argv.slice(2);
+var contents = [];
+var count = 0;
 
-http.get(url, function(response) {
-  response.setEncoding("utf8");
-  response.on("data", function(data) {
-    received.push(data);
+function httpGet (index) {
+  http.get(url[index], function(response) {
+    response.pipe(bl(function(err, data) {
+      if(err) {
+        return console.error(err);
+      }
+      data = data.toString();
+      contents[index] = data;
+      count++;
+
+      if(count == 3) {
+        for(var j = 0; j < 3; j++) {
+          console.log(contents[j]);
+        }
+      }
+    }));
   });
-  response.on("end", function() {
-    var string = received.join("");
-    console.log(string.length);
-    console.log(string);
-  })
-});
+};
+
+for(var i = 0; i < 3; i++) {
+  httpGet(i);
+}
